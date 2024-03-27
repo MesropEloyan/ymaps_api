@@ -3,12 +3,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Поиск маршрута</title>
-    <script src="https://api-maps.yandex.ru/2.1/?apikey=API____KEY&lang=ru_RU" type="text/javascript"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=2a36827c-2c8f-435c-88be-d5ac7507a6ea&lang=ru_RU" type="text/javascript"></script>
     <style>
-        #map {
-            width: 50%;
-            height: 400px;
-        }
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label, input, button {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input, button {
+    width: 50%; /* Изменено на 80% */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#map {
+    width: 50%; /* Изменено на 80% */
+    height: 400px;
+    margin-bottom: 20px;
+}
+
     </style>
 </head>
 <body>
@@ -30,6 +72,11 @@
         var startPoint = document.getElementById('startPoint').value; 
         var endPoint = document.getElementById('endPoint').value; 
         
+        if (!startPoint || !endPoint) {
+                document.getElementById('routeInfo').innerHTML = 'Заполните все поля';
+                return;
+            }
+    
         ymaps.ready(function () {
             if (myMap) {
                 myMap.destroy(); // Уничтожаем старую карту
@@ -46,10 +93,11 @@
                     myMap.setBounds(route.getWayPoints().getBounds(), { checkZoomRange: true }); // Установка границ карты по маршруту
                     var distance = route.getHumanLength();
                     var duration = route.getHumanTime();
-                    document.getElementById('routeInfo').innerHTML = 'Расстояние: ' + distance + '<br>Время в пути: ' + duration;
+                    var distanceInKm = route.getLength() / 1000; // расстояние в метрах делим на 1000 чтобы было км
+                   document.getElementById('routeInfo').innerHTML = 'Расстояние: ' + + distanceInKm.toFixed(1) + 'км' + '<br>Время в пути: ' + duration; //distanceInKm.toFixed(1) округление до 0.1
                 }, 
                 function (error) { 
-                    alert('Ошибка: ' + error.message); 
+                    document.getElementById('routeInfo').innerHTML = 'Введите корректные данные'; 
                 } 
             ); 
         });
